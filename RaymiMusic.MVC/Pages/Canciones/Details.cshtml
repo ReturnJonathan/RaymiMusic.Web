@@ -1,0 +1,17 @@
+﻿@page "{id:guid}"
+@model RaymiMusic.MVC.Pages.Canciones.DetailsModel
+
+<h1>@Model.Cancion.Titulo</h1>
+<p><strong>Artista:</strong> @Model.Cancion.Artista.NombreArtistico</p>
+<p><strong>Género:</strong> @Model.Cancion.Genero.Nombre</p>
+<p><strong>Duración:</strong> @Model.Cancion.Duracion</p>
+
+<audio controls preload="metadata" style="width:100%;">
+    <source src="@Model.UrlStreaming" type="audio/mpeg" />
+    Tu navegador no soporta el elemento
+    <code>audio</code>.
+</audio>
+
+<p>
+    <a asp-page="Index" class="btn btn-secondary">Volver al listado</a>
+</p>

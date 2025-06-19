@@ -1,0 +1,18 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Generos.CreateModel
+
+<h1>Crear Género</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Genero.Nombre"></label>
+        <input asp-for="Genero.Nombre" class="form-control" />
+        <span asp-validation-for="Genero.Nombre" class="text-danger" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

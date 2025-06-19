@@ -1,0 +1,31 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Artistas.IndexModel
+
+<h1>Artistas</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">Nuevo Artista</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre Artístico</th>
+            <th>Biografía</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model.Artistas)
+        {
+            <tr>
+                <td>@a.NombreArtistico</td>
+                <td>@a.Biografia</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@a.Id">Editar</a> |
+                    <a asp-page="Delete" asp-route-id="@a.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

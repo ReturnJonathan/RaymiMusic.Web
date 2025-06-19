@@ -1,0 +1,22 @@
+﻿@page "{id:guid}"
+@model RaymiMusic.MVC.Pages.Usuarios.DeleteModel
+
+<h1>Eliminar Usuario</h1>
+
+<h3>¿Seguro que deseas eliminar este usuario?</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Correo</dt>
+        <dd class="col-sm-10">@Model.Usuario.Correo</dd>
+        <dt class="col-sm-2">Rol</dt>
+        <dd class="col-sm-10">@Model.Usuario.Rol</dd>
+        <dt class="col-sm-2">Plan</dt>
+        <dd class="col-sm-10">@Model.Usuario.PlanSuscripcion?.Nombre</dd>
+    </dl>
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>

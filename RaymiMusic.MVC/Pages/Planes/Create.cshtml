@@ -1,0 +1,28 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Planes.CreateModel
+
+<h1>Crear Plan de Suscripción</h1>
+
+<form method="post">
+    <div class="form-group">
+        <label asp-for="Plan.Nombre"></label>
+        <input asp-for="Plan.Nombre" class="form-control" />
+        <span asp-validation-for="Plan.Nombre" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Plan.Precio"></label>
+        <input asp-for="Plan.Precio" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="Plan.Precio" class="text-danger" />
+    </div>
+    <div class="form-group">
+        <label asp-for="Plan.DescargasMaximas"></label>
+        <input asp-for="Plan.DescargasMaximas" class="form-control" type="number" />
+        <span asp-validation-for="Plan.DescargasMaximas" class="text-danger" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

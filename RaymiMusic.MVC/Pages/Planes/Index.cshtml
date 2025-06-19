@@ -1,0 +1,33 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Planes.IndexModel
+
+<h1>Planes de Suscripción</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">Nuevo Plan</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Descargas Máx.</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model.Planes)
+        {
+            <tr>
+                <td>@p.Nombre</td>
+                <td>@p.Precio.ToString("C")</td>
+                <td>@p.DescargasMaximas</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@p.Id">Editar</a> |
+                    <a asp-page="Delete" asp-route-id="@p.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

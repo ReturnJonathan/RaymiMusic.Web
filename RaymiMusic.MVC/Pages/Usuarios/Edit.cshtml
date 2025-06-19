@@ -1,0 +1,46 @@
+﻿@page "{id:guid}"
+@model RaymiMusic.MVC.Pages.Usuarios.EditModel
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+<h1>Editar Usuario</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Usuario.Id" />
+
+    <div class="form-group">
+        <label asp-for="Usuario.Correo"></label>
+        <input asp-for="Usuario.Correo" class="form-control" />
+        <span asp-validation-for="Usuario.Correo" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Usuario.HashContrasena"></label>
+        <input asp-for="Usuario.HashContrasena" class="form-control" type="password" />
+        <span asp-validation-for="Usuario.HashContrasena" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Usuario.Rol"></label>
+        <select asp-for="Usuario.Rol" class="form-control">
+            <option value="Free">Free</option>
+            <option value="Premium">Premium</option>
+            <option value="Artista">Artista</option>
+            <option value="Admin">Admin</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Usuario.PlanSuscripcionId">Plan</label>
+        <select asp-for="Usuario.PlanSuscripcionId" class="form-control"
+                asp-items="@(new SelectList(Model.Planes, "Id", "Nombre", Model.Usuario.PlanSuscripcionId))">
+            <option value="">-- Selecciona un plan --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

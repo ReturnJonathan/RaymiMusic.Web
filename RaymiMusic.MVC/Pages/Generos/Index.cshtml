@@ -1,0 +1,29 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Generos.IndexModel
+
+<h1>Géneros</h1>
+
+<p>
+    <a class="btn btn-primary" asp-page="Create">Nuevo Género</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model.Generos)
+        {
+            <tr>
+                <td>@g.Nombre</td>
+                <td>
+                    <a asp-page="Edit" asp-route-id="@g.Id">Editar</a> |
+                    <a asp-page="Delete" asp-route-id="@g.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

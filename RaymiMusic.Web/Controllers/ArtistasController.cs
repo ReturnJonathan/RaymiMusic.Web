@@ -87,5 +87,17 @@ namespace RaymiMusic.Api.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("por-correo/{correo}")]
+        public async Task<ActionResult<Artista>> ObtenerPorCorreo(string correo)
+        {
+            var artista = await _context.Artistas
+                .Where(a => a.NombreArtistico == correo)  // Ajusta esto según cómo enlazas artistas a usuarios
+                .SingleOrDefaultAsync();
+
+            if (artista == null) return NotFound();
+            return artista;
+        }
+
     }
 }

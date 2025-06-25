@@ -12,5 +12,8 @@ namespace RaymiMusic.MVC.Services
         Task<Artista> CrearAsync(Artista artista);
         Task ActualizarAsync(Guid id, Artista artista);
         Task EliminarAsync(Guid id);
+
+        Task<Artista?> ObtenerPorCorreoAsync(string correo);
+
     }
 }

@@ -18,7 +18,24 @@ namespace RaymiMusic.MVC.Pages.Canciones
 
         public async Task OnGetAsync()
         {
-            Canciones = await _svc.ObtenerTodosAsync();
+            var rol = HttpContext.Session.GetString("Rol");
+            var correo = HttpContext.Session.GetString("Correo");
+
+            if (rol == "Admin")
+            {
+                Canciones = await _svc.ObtenerTodosAsync();
+            }
+            else if (rol == "Artista")
+            {
+                var todas = await _svc.ObtenerTodosAsync();
+                Canciones = todas.Where(c => c.Artista.NombreArtistico == correo);
+            }
+            else
+            {
+                // Usuario o sin sesión
+                Canciones = await _svc.ObtenerTodosAsync();
+            }
         }
+
     }
 }

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using RaymiMusic.Modelos;
 using RaymiMusic.MVC.Services;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace RaymiMusic.MVC.Pages.Canciones
 {
@@ -34,31 +35,32 @@ namespace RaymiMusic.MVC.Pages.Canciones
         // Colección donde volcaremos los mensajes de error
         public List<string> Errores { get; set; } = new();
 
-        public async Task OnGetAsync()
-        {
-            Artistas = await _artSvc.ObtenerTodosAsync();
-            Generos = await _genSvc.ObtenerTodosAsync();
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
-            // recarga selects antes de validar
-            Artistas = await _artSvc.ObtenerTodosAsync();
             Generos = await _genSvc.ObtenerTodosAsync();
+            Artistas = await _artSvc.ObtenerTodosAsync(); // por si es admin
 
             if (!ModelState.IsValid)
             {
-                // extrae todos los errores a la lista Errores
-                Errores = ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage)
-                    .ToList();
+                Errores = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
                 return Page();
+            }
+
+            var rol = HttpContext.Session.GetString("Rol");
+            var correo = HttpContext.Session.GetString("Correo");
+
+            if (rol == "Artista")
+            {
+                var artista = await _artSvc.ObtenerPorCorreoAsync(correo!);
+                if (artista == null) return Unauthorized();
+
+                Cancion.ArtistaId = artista.Id;
             }
 
             Cancion.Id = Guid.NewGuid();
             await _svc.CrearAsync(Cancion);
             return RedirectToPage("Index");
         }
+
     }
 }

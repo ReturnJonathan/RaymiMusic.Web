@@ -12,13 +12,28 @@
         <input asp-for="Cancion.Titulo" class="form-control" />
         <span asp-validation-for="Cancion.Titulo" class="text-danger" />
     </div>
-    <div class="form-group">
-        <label asp-for="Cancion.ArtistaId">Artista</label>
-        <select asp-for="Cancion.ArtistaId" class="form-control"
-                asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico", Model.Cancion.ArtistaId))">
-            <option value="">-- Selecciona un artista --</option>
-        </select>
-    </div>
+    @using Microsoft.AspNetCore.Http
+
+    @{
+        var rol = ViewContext.HttpContext.Session.GetString("Rol");
+    }
+
+    @if (rol == "Admin")
+    {
+        <div class="form-group">
+            <label asp-for="Cancion.ArtistaId">Artista</label>
+            <select asp-for="Cancion.ArtistaId" class="form-control"
+                    asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico"))">
+                <option value="">-- Selecciona un artista --</option>
+            </select>
+        </div>
+    }
+    else if (rol == "Artista")
+    {
+        <p><strong>No puedes cambiar el artista de esta canción.</strong></p>
+        <input type="hidden" asp-for="Cancion.ArtistaId" />
+    }
+
     <div class="form-group">
         <label asp-for="Cancion.GeneroId">Género</label>
         <select asp-for="Cancion.GeneroId" class="form-control"

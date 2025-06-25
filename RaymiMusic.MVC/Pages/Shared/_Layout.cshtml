@@ -19,6 +19,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        <!-- Enlaces de navegación existentes -->
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
@@ -40,10 +41,32 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Generos/Index">Géneros</a>
                         </li>
+                    </ul>
 
-                        <!-- Si más adelante agregas Artistas, Canciones, Álbumes, etc., añade aquí sus enlaces -->
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetString("Correo") != null)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Hola, @Context.Session.GetString("Correo")</span>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post" asp-page="/Cuenta/Logout" class="form-inline">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Cuenta/Login">Iniciar sesión</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-page="/Cuenta/Register">Registrarse</a>
+                            </li>
+                        }
                     </ul>
                 </div>
+
             </div>
         </nav>
     </header>

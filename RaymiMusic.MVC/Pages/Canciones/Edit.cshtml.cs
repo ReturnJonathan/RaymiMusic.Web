@@ -31,9 +31,18 @@ namespace RaymiMusic.MVC.Pages.Canciones
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
-            var c = await _svc.ObtenerPorIdAsync(id);
-            if (c == null) return NotFound();
-            Cancion = c;
+            var cancion = await _svc.ObtenerPorIdAsync(id);
+            if (cancion == null) return NotFound();
+
+            var rol = HttpContext.Session.GetString("Rol");
+            var correo = HttpContext.Session.GetString("Correo");
+
+            if (rol == "Artista" && cancion.Artista.NombreArtistico != correo)
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
+            Cancion = cancion;
             Artistas = await _artSvc.ObtenerTodosAsync();
             Generos = await _genSvc.ObtenerTodosAsync();
             return Page();
@@ -41,6 +50,20 @@ namespace RaymiMusic.MVC.Pages.Canciones
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var rol = HttpContext.Session.GetString("Rol");
+            var correo = HttpContext.Session.GetString("Correo");
+
+            if (rol == "Artista")
+            {
+                var original = await _svc.ObtenerPorIdAsync(Cancion.Id);
+                if (original == null || original.Artista.NombreArtistico != correo)
+                {
+                    return RedirectToPage("/Cuenta/Login");
+                }
+
+                Cancion.ArtistaId = original.ArtistaId; // proteger campo ArtistaId
+            }
+
             if (!ModelState.IsValid)
             {
                 Artistas = await _artSvc.ObtenerTodosAsync();
@@ -51,5 +74,8 @@ namespace RaymiMusic.MVC.Pages.Canciones
             await _svc.ActualizarAsync(Cancion.Id, Cancion);
             return RedirectToPage("Index");
         }
+
+
+        
     }
 }

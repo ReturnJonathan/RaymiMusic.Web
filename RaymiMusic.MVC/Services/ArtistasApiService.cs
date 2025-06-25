@@ -39,5 +39,13 @@ namespace RaymiMusic.MVC.Services
             var resp = await _http.DeleteAsync($"api/Artistas/{id}");
             resp.EnsureSuccessStatusCode();
         }
+        public async Task<Artista?> ObtenerPorCorreoAsync(string correo)
+        {
+            var response = await _http.GetAsync($"api/artistas/por-correo/{correo}");
+            if (!response.IsSuccessStatusCode) return null;
+
+            return await response.Content.ReadFromJsonAsync<Artista>();
+        }
+
     }
 }

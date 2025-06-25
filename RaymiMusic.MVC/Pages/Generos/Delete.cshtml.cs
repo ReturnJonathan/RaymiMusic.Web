@@ -18,11 +18,18 @@ namespace RaymiMusic.MVC.Pages.Generos
         {
             _svc = svc;
         }
-
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var rol = HttpContext.Session.GetString("Rol");
+
+            if (rol != "Admin")
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
             var g = await _svc.ObtenerPorIdAsync(id);
             if (g == null) return NotFound();
+
             Genero = g;
             return Page();
         }

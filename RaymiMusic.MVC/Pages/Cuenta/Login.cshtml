@@ -1,0 +1,19 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Cuenta.LoginModel
+@{
+    ViewData["Title"] = "Iniciar sesión";
+}
+
+<h2>Iniciar sesión</h2>
+
+<form method="post">
+    <div>
+        <label>Email</label>
+        <input type="email" name="Correo" required />
+    </div>
+    <div>
+        <label>Contraseña</label>
+        <input type="password" name="Contrasena" required />
+    </div>
+    <button type="submit">Iniciar sesión</button>
+</form>

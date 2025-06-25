@@ -18,7 +18,18 @@ namespace RaymiMusic.MVC.Pages.Planes
             _svc = svc;
         }
 
-        public void OnGet() { }
+        public IActionResult OnGet()
+        {
+            var rol = HttpContext.Session.GetString("Rol");
+
+            if (rol != "Admin")
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
+            return Page();
+        }
+
 
         public async Task<IActionResult> OnPostAsync()
         {

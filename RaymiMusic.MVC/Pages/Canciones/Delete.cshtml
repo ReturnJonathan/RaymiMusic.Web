@@ -1,20 +1,47 @@
 ﻿@page "{id:guid}"
 @model RaymiMusic.MVC.Pages.Canciones.DeleteModel
 
-<h1>Eliminar Canción</h1>
+@{
+    ViewData["Title"] = "Eliminar Canción";
+    Layout = "_Layout";
+}
 
-<h3>¿Seguro que deseas eliminar esta canción?</h3>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="text-danger text-center mb-4">
+                    <i class="bi bi-trash-fill me-2"></i>Eliminar Canción
+                </h2>
 
-<dl class="row">
-	<dt class="col-sm-2">Título</dt>
-	<dd class="col-sm-10">@Model.Cancion.Titulo</dd>
-	<dt class="col-sm-2">Artista</dt>
-	<dd class="col-sm-10">@Model.Cancion.Artista.NombreArtistico</dd>
-	<dt class="col-sm-2">Género</dt>
-	<dd class="col-sm-10">@Model.Cancion.Genero.Nombre</dd>
-</dl>
+                <h5 class="text-center mb-4">¿Seguro que deseas eliminar esta canción?</h5>
 
-<form method="post">
-	<button type="submit" class="btn btn-danger">Eliminar</button>
-	<a asp-page="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        <i class="bi bi-music-note-beamed me-1"></i>Título
+                    </dt>
+                    <dd class="col-sm-8">@Model.Cancion.Titulo</dd>
+
+                    <dt class="col-sm-4">
+                        <i class="bi bi-person-fill me-1"></i>Artista
+                    </dt>
+                    <dd class="col-sm-8">@Model.Cancion.Artista.NombreArtistico</dd>
+
+                    <dt class="col-sm-4">
+                        <i class="bi bi-tags-fill me-1"></i>Género
+                    </dt>
+                    <dd class="col-sm-8">@Model.Cancion.Genero.Nombre</dd>
+                </dl>
+
+                <form method="post" class="mt-4 d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i>Eliminar
+                    </button>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="bi bi-x-circle me-1"></i>Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

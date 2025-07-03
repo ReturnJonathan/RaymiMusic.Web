@@ -75,7 +75,6 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-
 app.UseAuthorization();
 app.UseSession();
 // Si en el futuro agregas controladores MVC, descomenta esto:

@@ -1,8 +1,17 @@
 ﻿@page
 @model RaymiMusic.MVC.Pages.Canciones.CreateModel
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Http
 
-<h1>Nueva Canción</h1>
+@{
+    ViewData["Title"] = "Nueva Canción";
+    Layout = "_Layout";
+    var rol = ViewContext.HttpContext.Session.GetString("Rol");
+}
+
+<h2 class="mb-4">
+    <i class="bi bi-music-note-beamed me-2"></i>Nueva Canción
+</h2>
 
 @if (Model.Errores.Any())
 {
@@ -17,22 +26,19 @@
 }
 
 <form method="post">
-    <div class="form-group">
-        <label asp-for="Cancion.Titulo"></label>
+    <div class="mb-3">
+        <label asp-for="Cancion.Titulo" class="form-label">
+            <i class="bi bi-music-note me-1"></i>Título
+        </label>
         <input asp-for="Cancion.Titulo" class="form-control" />
     </div>
 
-    @using Microsoft.AspNetCore.Http
-
-    @{
-        var rol = ViewContext.HttpContext.Session.GetString("Rol");
-    }
-
-
     @if (rol == "Admin")
     {
-        <div class="form-group">
-            <label asp-for="Cancion.ArtistaId">Artista</label>
+        <div class="mb-3">
+            <label asp-for="Cancion.ArtistaId" class="form-label">
+                <i class="bi bi-person-fill me-1"></i>Artista
+            </label>
             <select asp-for="Cancion.ArtistaId" class="form-control"
                     asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico"))">
                 <option value="">-- Selecciona un artista --</option>
@@ -41,34 +47,62 @@
     }
     else if (rol == "Artista")
     {
-        <p><strong>Tu canción será registrada bajo tu autoría automáticamente.</strong></p>
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-1"></i>
+            Tu canción será registrada bajo tu autoría automáticamente.
+        </div>
         <input type="hidden" asp-for="Cancion.ArtistaId" />
     }
 
-
-
-    <div class="form-group">
-        <label asp-for="Cancion.GeneroId">Género</label>
+    <div class="mb-3">
+        <label asp-for="Cancion.GeneroId" class="form-label">
+            <i class="bi bi-tags-fill me-1"></i>Género
+        </label>
         <select asp-for="Cancion.GeneroId" class="form-control"
                 asp-items="@(new SelectList(Model.Generos, "Id", "Nombre"))">
             <option value="">-- Selecciona un género --</option>
         </select>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Cancion.RutaArchivo">Ruta de archivo</label>
-        <input asp-for="Cancion.RutaArchivo" class="form-control" />
+    <!-- Selector de archivo con ícono -->
+    <div class="mb-3">
+        <label class="form-label">
+            <i class="bi bi-upload me-1"></i>Archivo de la canción
+        </label>
+        <div class="input-group">
+            <input type="file" id="archivoInput" class="form-control" accept="audio/*">
+        </div>
+        <!-- Campo oculto que contiene solo el nombre o ruta -->
+        <input type="hidden" asp-for="Cancion.RutaArchivo" id="RutaArchivo" />
     </div>
 
-    <div class="form-group">
-        <label asp-for="Cancion.Duracion"></label>
+    <div class="mb-3">
+        <label asp-for="Cancion.Duracion" class="form-label">
+            <i class="bi bi-clock-fill me-1"></i>Duración
+        </label>
         <input asp-for="Cancion.Duracion" type="time" step="1" class="form-control" />
     </div>
 
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-check-circle me-1"></i> Guardar
+        </button>
+        <a asp-page="Index" class="btn btn-secondary">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+        </a>
+    </div>
 </form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Obtener nombre de archivo y asignarlo al input oculto
+        document.getElementById('archivoInput')?.addEventListener('change', function () {
+            const archivo = this.files[0];
+            if (archivo) {
+                // Puedes usar solo el nombre o la ruta simulada:
+                document.getElementById('RutaArchivo').value = archivo.name;
+            }
+        });
+    </script>
 }

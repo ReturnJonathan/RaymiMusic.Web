@@ -18,6 +18,7 @@ namespace RaymiMusic.MVC.Pages.Generos
         {
             _svc = svc;
         }
+
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var rol = HttpContext.Session.GetString("Rol");
@@ -36,6 +37,13 @@ namespace RaymiMusic.MVC.Pages.Generos
 
         public async Task<IActionResult> OnPostAsync(Guid id)
         {
+            var rol = HttpContext.Session.GetString("Rol");
+
+            if (rol != "Admin")
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
             await _svc.EliminarAsync(id);
             return RedirectToPage("Index");
         }

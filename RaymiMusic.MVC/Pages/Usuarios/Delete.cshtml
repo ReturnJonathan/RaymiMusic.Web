@@ -1,22 +1,46 @@
 ﻿@page "{id:guid}"
 @model RaymiMusic.MVC.Pages.Usuarios.DeleteModel
+@{
+    ViewData["Title"] = "Eliminar Usuario";
+    Layout = "_Layout";
+}
 
-<h1>Eliminar Usuario</h1>
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-3 text-center text-danger">
+                    <i class="bi bi-trash-fill me-2"></i>Eliminar Usuario
+                </h2>
 
-<h3>¿Seguro que deseas eliminar este usuario?</h3>
+                <h5 class="text-center mb-4">¿Seguro que deseas eliminar este usuario?</h5>
 
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Correo</dt>
-        <dd class="col-sm-10">@Model.Usuario.Correo</dd>
-        <dt class="col-sm-2">Rol</dt>
-        <dd class="col-sm-10">@Model.Usuario.Rol</dd>
-        <dt class="col-sm-2">Plan</dt>
-        <dd class="col-sm-10">@Model.Usuario.PlanSuscripcion?.Nombre</dd>
-    </dl>
+                <dl class="row">
+                    <dt class="col-sm-4">
+                        <i class="bi bi-envelope-fill me-1"></i>Correo
+                    </dt>
+                    <dd class="col-sm-8">@Model.Usuario.Correo</dd>
+
+                    <dt class="col-sm-4">
+                        <i class="bi bi-shield-lock-fill me-1"></i>Rol
+                    </dt>
+                    <dd class="col-sm-8">@Model.Usuario.Rol</dd>
+
+                    <dt class="col-sm-4">
+                        <i class="bi bi-stars me-1"></i>Plan
+                    </dt>
+                    <dd class="col-sm-8">@Model.Usuario.PlanSuscripcion?.Nombre</dd>
+                </dl>
+
+                <form method="post" class="mt-4 d-flex justify-content-between">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-trash me-1"></i> Eliminar
+                    </button>
+                    <a asp-page="Index" class="btn btn-secondary">
+                        <i class="bi bi-x-circle me-1"></i> Cancelar
+                    </a>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
-<form method="post">
-    <button type="submit" class="btn btn-danger">Eliminar</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
-</form>

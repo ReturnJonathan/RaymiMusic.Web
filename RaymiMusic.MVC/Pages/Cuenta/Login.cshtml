@@ -2,18 +2,43 @@
 @model RaymiMusic.MVC.Pages.Cuenta.LoginModel
 @{
     ViewData["Title"] = "Iniciar sesión";
+    Layout = "_Layout";
 }
 
-<h2>Iniciar sesión</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar sesión
+                </h2>
 
-<form method="post">
-    <div>
-        <label>Email</label>
-        <input type="email" name="Correo" required />
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="Correo" class="form-label">
+                            <i class="bi bi-envelope-fill me-1"></i>Email
+                        </label>
+                        <input type="email" name="Correo" id="Correo" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Contrasena" class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>Contraseña
+                        </label>
+                        <input type="password" name="Contrasena" id="Contrasena" class="form-control" required />
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Iniciar sesión
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small>¿No tienes una cuenta? <a asp-page="/Cuenta/Register" class="text-info">Regístrate</a></small>
+                </div>
+            </div>
+        </div>
     </div>
-    <div>
-        <label>Contraseña</label>
-        <input type="password" name="Contrasena" required />
-    </div>
-    <button type="submit">Iniciar sesión</button>
-</form>
+</div>

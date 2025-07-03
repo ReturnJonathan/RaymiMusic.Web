@@ -12,7 +12,7 @@ using RaymiMusic.Api.Data;
 namespace RaymiMusic.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250619074246_InitialCreate")]
+    [Migration("20250625164916_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

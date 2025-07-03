@@ -1,45 +1,44 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - RaymiMusic.MVC</title>
+
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/RaymiMusic.MVC.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 </head>
-<body>
+
+<body class="bg-dark text-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-dark bg-dark shadow-sm mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">RaymiMusic.MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand" asp-area="" asp-page="/Index">RaymiMusic</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
-                        <!-- Enlaces de navegación existentes -->
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-light" asp-page="/Index">Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link text-light" asp-page="/Usuarios/Index">Usuarios</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Usuarios/Index">Usuarios</a>
+                            <a class="nav-link text-light" asp-page="/Planes/Index">Planes</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Planes/Index">Planes</a>
+                            <a class="nav-link text-light" asp-page="/Artistas/Index">Artistas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Artistas/Index">Artistas</a>
+                            <a class="nav-link text-light" asp-page="/Canciones/Index">Canciones</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Canciones/Index">Canciones</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Generos/Index">Géneros</a>
+                            <a class="nav-link text-light" asp-page="/Generos/Index">Géneros</a>
                         </li>
                     </ul>
 
@@ -47,38 +46,46 @@
                         @if (Context.Session.GetString("Correo") != null)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-dark">Hola, @Context.Session.GetString("Correo")</span>
+                                <span class="nav-link text-info">
+                                    <i class="bi bi-person-circle me-1"></i> @Context.Session.GetString("Correo")
+                                </span>
                             </li>
                             <li class="nav-item">
                                 <form method="post" asp-page="/Cuenta/Logout" class="form-inline">
-                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cerrar sesión</button>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+                                    </button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Cuenta/Login">Iniciar sesión</a>
+                                <a class="nav-link text-light" asp-page="/Cuenta/Login">
+                                    <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Cuenta/Register">Registrarse</a>
+                                <a class="nav-link text-light" asp-page="/Cuenta/Register">
+                                    <i class="bi bi-person-plus"></i> Registrarse
+                                </a>
                             </li>
                         }
                     </ul>
                 </div>
-
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top mt-auto text-center">
         <div class="container">
-            &copy; 2025 - RaymiMusic.MVC - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            <span>&copy; 2025 - RaymiMusic.MVC - <a asp-area="" asp-page="/Privacy" class="text-info">Privacy</a></span>
         </div>
     </footer>
 

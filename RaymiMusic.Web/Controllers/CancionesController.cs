@@ -66,14 +66,38 @@ namespace RaymiMusic.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<Cancion>> PostCancion(Cancion cancion)
         {
-            cancion.Id = Guid.NewGuid();
-            _context.Canciones.Add(cancion);
-            await _context.SaveChangesAsync();
+            // Validaciones básicas
+            if (string.IsNullOrWhiteSpace(cancion.Titulo))
+                return BadRequest("El título es obligatorio.");
 
-            return CreatedAtAction(nameof(GetCancion),
-                                   new { id = cancion.Id },
-                                   cancion);
+            if (string.IsNullOrWhiteSpace(cancion.RutaArchivo))
+                return BadRequest("La ruta del archivo es obligatoria.");
+
+            if (cancion.Duracion == TimeSpan.Zero)
+                return BadRequest("La duración debe ser mayor a 0.");
+
+            if (cancion.GeneroId == Guid.Empty)
+                return BadRequest("Debe especificar un género.");
+
+            if (cancion.ArtistaId == Guid.Empty)
+                return BadRequest("Debe especificar un artista.");
+
+            try
+            {
+                cancion.Id = Guid.NewGuid();
+                _context.Canciones.Add(cancion);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction(nameof(GetCancion),
+                                       new { id = cancion.Id },
+                                       cancion);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error al guardar la canción: " + ex.Message);
+            }
         }
+
 
         // PUT: api/Canciones/{id}
         [HttpPut("{id:guid}")]

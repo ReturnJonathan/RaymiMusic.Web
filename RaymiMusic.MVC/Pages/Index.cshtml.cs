@@ -12,9 +12,16 @@ namespace RaymiMusic.MVC.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
+            var rol = HttpContext.Session.GetString("Rol");
 
+            if (string.IsNullOrEmpty(rol))
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
+            return Page();
         }
     }
 }

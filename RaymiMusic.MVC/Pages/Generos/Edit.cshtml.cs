@@ -13,7 +13,7 @@ namespace RaymiMusic.MVC.Pages.Generos
 
         [BindProperty]
         public Genero Genero { get; set; } = null!;
-       
+
         public EditModel(IGenerosApiService svc)
         {
             _svc = svc;
@@ -37,7 +37,17 @@ namespace RaymiMusic.MVC.Pages.Generos
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();
+            var rol = HttpContext.Session.GetString("Rol");
+
+            if (rol != "Admin")
+            {
+                return RedirectToPage("/Cuenta/Login");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
 
             await _svc.ActualizarAsync(Genero.Id, Genero);
             return RedirectToPage("Index");

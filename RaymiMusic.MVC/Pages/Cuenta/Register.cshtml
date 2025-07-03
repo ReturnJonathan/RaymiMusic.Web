@@ -2,33 +2,60 @@
 @model RaymiMusic.MVC.Pages.Cuenta.RegisterModel
 @{
     ViewData["Title"] = "Registro";
+    Layout = "_Layout";
 }
 
-<h2>Registro</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center">
+                    <i class="bi bi-person-plus me-2"></i>Registro
+                </h2>
 
-@if (Model.ErrorMensaje != null)
-{
-    <div class="alert alert-danger">@Model.ErrorMensaje</div>
-}
+                @if (Model.ErrorMensaje != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i> @Model.ErrorMensaje
+                    </div>
+                }
 
-<form method="post">
-    <div class="form-group">
-        <label>Correo electrónico</label>
-        <input type="email" name="Correo" class="form-control" required />
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="Correo" class="form-label">
+                            <i class="bi bi-envelope-fill me-1"></i>Correo electrónico
+                        </label>
+                        <input type="email" name="Correo" id="Correo" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Contrasena" class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>Contraseña
+                        </label>
+                        <input type="password" name="Contrasena" id="Contrasena" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="TipoCuenta" class="form-label">
+                            <i class="bi bi-person-badge-fill me-1"></i>Tipo de cuenta
+                        </label>
+                        <select name="TipoCuenta" id="TipoCuenta" class="form-control" required>
+                            <option value="Usuario">Usuario</option>
+                            <option value="Artista">Artista</option>
+                        </select>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle me-1"></i> Registrarse
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small>¿Ya tienes una cuenta? <a asp-page="/Cuenta/Login" class="text-info">Inicia sesión</a></small>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label>Contraseña</label>
-        <input type="password" name="Contrasena" class="form-control" required />
-    </div>
-
-    <div class="form-group">
-        <label>Tipo de cuenta</label>
-        <select name="TipoCuenta" class="form-control" required>
-            <option value="Usuario">Usuario</option>
-            <option value="Artista">Artista</option>
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Registrarse</button>
-</form>
+</div>

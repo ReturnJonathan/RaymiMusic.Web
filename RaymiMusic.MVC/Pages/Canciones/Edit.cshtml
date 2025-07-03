@@ -1,57 +1,91 @@
 ﻿@page "{id:guid}"
 @model RaymiMusic.MVC.Pages.Canciones.EditModel
 @using Microsoft.AspNetCore.Mvc.Rendering
+@using Microsoft.AspNetCore.Http
 
-<h1>Editar Canción</h1>
+@{
+    ViewData["Title"] = "Editar Canción";
+    Layout = "_Layout";
+    var rol = ViewContext.HttpContext.Session.GetString("Rol");
+}
 
-<form method="post">
-    <input type="hidden" asp-for="Cancion.Id" />
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center">
+                    <i class="bi bi-pencil-fill me-2"></i>Editar Canción
+                </h2>
 
-    <div class="form-group">
-        <label asp-for="Cancion.Titulo"></label>
-        <input asp-for="Cancion.Titulo" class="form-control" />
-        <span asp-validation-for="Cancion.Titulo" class="text-danger" />
-    </div>
-    @using Microsoft.AspNetCore.Http
+                <form method="post">
+                    <input type="hidden" asp-for="Cancion.Id" />
 
-    @{
-        var rol = ViewContext.HttpContext.Session.GetString("Rol");
-    }
+                    <div class="mb-3">
+                        <label asp-for="Cancion.Titulo" class="form-label">
+                            <i class="bi bi-music-note-beamed me-1"></i>Título
+                        </label>
+                        <input asp-for="Cancion.Titulo" class="form-control" />
+                        <span asp-validation-for="Cancion.Titulo" class="text-danger" />
+                    </div>
 
-    @if (rol == "Admin")
-    {
-        <div class="form-group">
-            <label asp-for="Cancion.ArtistaId">Artista</label>
-            <select asp-for="Cancion.ArtistaId" class="form-control"
-                    asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico"))">
-                <option value="">-- Selecciona un artista --</option>
-            </select>
+                    @if (rol == "Admin")
+                    {
+                        <div class="mb-3">
+                            <label asp-for="Cancion.ArtistaId" class="form-label">
+                                <i class="bi bi-person-fill me-1"></i>Artista
+                            </label>
+                            <select asp-for="Cancion.ArtistaId" class="form-control"
+                                    asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico"))">
+                                <option value="">-- Selecciona un artista --</option>
+                            </select>
+                        </div>
+                    }
+                    else if (rol == "Artista")
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                            No puedes cambiar el artista de esta canción.
+                        </div>
+                        <input type="hidden" asp-for="Cancion.ArtistaId" />
+                    }
+
+                    <div class="mb-3">
+                        <label asp-for="Cancion.GeneroId" class="form-label">
+                            <i class="bi bi-tags-fill me-1"></i>Género
+                        </label>
+                        <select asp-for="Cancion.GeneroId" class="form-control"
+                                asp-items="@(new SelectList(Model.Generos, "Id", "Nombre", Model.Cancion.GeneroId))">
+                            <option value="">-- Selecciona un género --</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Cancion.RutaArchivo" class="form-label">
+                            <i class="bi bi-file-earmark-music-fill me-1"></i>Ruta de archivo
+                        </label>
+                        <input asp-for="Cancion.RutaArchivo" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Cancion.Duracion" class="form-label">
+                            <i class="bi bi-clock-fill me-1"></i>Duración
+                        </label>
+                        <input asp-for="Cancion.Duracion" class="form-control" type="time" />
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Guardar cambios
+                        </button>
+                        <a asp-page="Index" class="btn btn-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </a>
+                    </div>
+                </form>
+            </div>
         </div>
-    }
-    else if (rol == "Artista")
-    {
-        <p><strong>No puedes cambiar el artista de esta canción.</strong></p>
-        <input type="hidden" asp-for="Cancion.ArtistaId" />
-    }
-
-    <div class="form-group">
-        <label asp-for="Cancion.GeneroId">Género</label>
-        <select asp-for="Cancion.GeneroId" class="form-control"
-                asp-items="@(new SelectList(Model.Generos, "Id", "Nombre", Model.Cancion.GeneroId))">
-            <option value="">-- Selecciona un género --</option>
-        </select>
     </div>
-    <div class="form-group">
-        <label asp-for="Cancion.RutaArchivo">Ruta de archivo</label>
-        <input asp-for="Cancion.RutaArchivo" class="form-control" />
-    </div>
-    <div class="form-group">
-        <label asp-for="Cancion.Duracion"></label>
-        <input asp-for="Cancion.Duracion" class="form-control" type="time" />
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

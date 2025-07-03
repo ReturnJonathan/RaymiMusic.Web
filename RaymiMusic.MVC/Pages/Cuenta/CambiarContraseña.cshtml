@@ -1,0 +1,51 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Cuenta.CambiarContraseñaModel
+@{
+    ViewData["Title"] = "Cambiar Contraseña";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center">
+                    <i class="bi bi-lock-fill me-2"></i>Cambiar Contraseña
+                </h2>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="CodigoRecuperacion" class="form-label">
+                            <i class="bi bi-code-slash me-1"></i>Código de Recuperación
+                        </label>
+                        <input type="text" name="CodigoRecuperacion" id="CodigoRecuperacion" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NuevaContrasena" class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>Nueva Contraseña
+                        </label>
+                        <input type="password" name="NuevaContrasena" id="NuevaContrasena" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ConfirmarContrasena" class="form-label">
+                            <i class="bi bi-lock-fill me-1"></i>Confirmar Contraseña
+                        </label>
+                        <input type="password" name="ConfirmarContrasena" id="ConfirmarContrasena" class="form-control" required />
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-lock-fill me-1"></i> Cambiar Contraseña
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small>¿Ya tienes tu nueva contraseña? <a asp-page="/Cuenta/Login" class="text-info">Inicia sesión</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

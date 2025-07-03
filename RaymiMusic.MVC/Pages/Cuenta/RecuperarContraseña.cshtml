@@ -1,0 +1,37 @@
+﻿@page
+@model RaymiMusic.MVC.Pages.Cuenta.RecuperarContraseñaModel
+@{
+    ViewData["Title"] = "Recuperar Contraseña";
+    Layout = "_Layout";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-sm border-0 bg-dark text-light">
+            <div class="card-body p-4">
+                <h2 class="mb-4 text-center">
+                    <i class="bi bi-key me-2"></i>Recuperar Contraseña
+                </h2>
+
+                <form method="post">
+                    <div class="mb-3">
+                        <label for="Correo" class="form-label">
+                            <i class="bi bi-envelope-fill me-1"></i>Correo electrónico
+                        </label>
+                        <input type="email" name="Correo" id="Correo" class="form-control" required />
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-key me-1"></i> Solicitar Recuperación
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <small>¿Recuperaste tu contraseña? <a asp-page="/Cuenta/Login" class="text-info">Inicia sesión</a></small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

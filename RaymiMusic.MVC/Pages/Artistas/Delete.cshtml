@@ -1,0 +1,20 @@
+﻿@page "{id:guid}"
+@model RaymiMusic.MVC.Pages.Artistas.DeleteModel
+
+<h1>Eliminar Artista</h1>
+
+<h3>¿Seguro que deseas eliminar este artista?</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Nombre Artístico</dt>
+        <dd class="col-sm-10">@Model.Artista.NombreArtistico</dd>
+        <dt class="col-sm-2">Biografía</dt>
+        <dd class="col-sm-10">@Model.Artista.Biografia</dd>
+    </dl>
+</div>
+
+<form method="post">
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>

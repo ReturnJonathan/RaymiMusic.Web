@@ -1,0 +1,34 @@
+﻿@page "{id:guid}"
+@model RaymiMusic.MVC.Pages.Artistas.EditModel
+
+<h1>Editar Artista</h1>
+
+<form method="post">
+    <input type="hidden" asp-for="Artista.Id" />
+    <div class="form-group">
+        <label asp-for="Artista.NombreArtistico"></label>
+        <input asp-for="Artista.NombreArtistico" class="form-control"/>
+        <span asp-validation-for="Artista.NombreArtistico" class="text-danger"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Artista.Biografia"></label>
+        <textarea asp-for="Artista.Biografia" class="form-control"></textarea>
+        <span asp-validation-for="Artista.Biografia" class="text-danger"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Artista.UrlFotoPerfil">URL Foto Perfil</label>
+        <input asp-for="Artista.UrlFotoPerfil" class="form-control"/>
+        <span asp-validation-for="Artista.UrlFotoPerfil" class="text-danger"/>
+    </div>
+    <div class="form-group">
+        <label asp-for="Artista.UrlFotoPortada">URL Foto Portada</label>
+        <input asp-for="Artista.UrlFotoPortada" class="form-control"/>
+        <span asp-validation-for="Artista.UrlFotoPortada" class="text-danger"/>
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-page="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+}

@@ -1,64 +1,113 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using RaymiMusic.Modelos;
 using RaymiMusic.MVC.Services;
-namespace RaymiMusic.MVC.Pages.Canciones { 
-public class CreateModel : PageModel
+
+namespace RaymiMusic.MVC.Pages.Canciones
 {
-    private readonly ICancionesApiService _svc;
-    private readonly IArtistasApiService _artSvc;
-    private readonly IGenerosApiService _genSvc;
-
-    public CreateModel(
-        ICancionesApiService svc,
-        IArtistasApiService artSvc,
-        IGenerosApiService genSvc)
+    public class CreateModel : PageModel
     {
-        _svc = svc;
-        _artSvc = artSvc;
-        _genSvc = genSvc;
-    }
+        private readonly ICancionesApiService _svc;
+        private readonly IArtistasApiService _artSvc;
+        private readonly IGenerosApiService _genSvc;
+        private readonly IWebHostEnvironment _env;
 
-    [BindProperty]
-    public Cancion Cancion { get; set; } = new();
-
-    public IEnumerable<Artista> Artistas { get; set; } = Array.Empty<Artista>();
-    public IEnumerable<Genero> Generos { get; set; } = Array.Empty<Genero>();
-
-    public List<string> Errores { get; set; } = new();
-
-    // ✅ Carga inicial de géneros y artistas
-    public async Task<IActionResult> OnGetAsync()
-    {
-        Generos = await _genSvc.ObtenerTodosAsync();
-        Artistas = await _artSvc.ObtenerTodosAsync();
-        return Page();
-    }
-
-    public async Task<IActionResult> OnPostAsync()
-    {
-        Generos = await _genSvc.ObtenerTodosAsync();
-        Artistas = await _artSvc.ObtenerTodosAsync();
-
-        if (!ModelState.IsValid)
+        public CreateModel(
+            ICancionesApiService svc,
+            IArtistasApiService artSvc,
+            IGenerosApiService genSvc,
+            IWebHostEnvironment env)
         {
-            Errores = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            _svc = svc;
+            _artSvc = artSvc;
+            _genSvc = genSvc;
+            _env = env;
+        }
+
+        /* ---------- PROPIEDADES ---------- */
+        [BindProperty] public Cancion Cancion { get; set; } = new();
+        [BindProperty] public IFormFile? Archivo { get; set; }
+
+        public IEnumerable<Artista> Artistas { get; set; } = Array.Empty<Artista>();
+        public IEnumerable<Genero> Generos { get; set; } = Array.Empty<Genero>();
+
+        public List<string> Errores { get; set; } = new();
+
+        /* ---------- GET ---------- */
+        public async Task<IActionResult> OnGetAsync()
+        {
+            Generos = await _genSvc.ObtenerTodosAsync();
+            Artistas = await _artSvc.ObtenerTodosAsync();
             return Page();
         }
 
-        var rol = HttpContext.Session.GetString("Rol");
-        var correo = HttpContext.Session.GetString("Correo");
-
-        if (rol == "Artista")
+        /* ---------- POST ---------- */
+        public async Task<IActionResult> OnPostAsync()
         {
-            var artista = await _artSvc.ObtenerPorCorreoAsync(correo!);
-            if (artista == null) return Unauthorized();
-            Cancion.ArtistaId = artista.Id;
-        }
+            Generos = await _genSvc.ObtenerTodosAsync();
+            Artistas = await _artSvc.ObtenerTodosAsync();
 
-        Cancion.Id = Guid.NewGuid();
-        await _svc.CrearAsync(Cancion);
-        return RedirectToPage("Index");
+            /* --- Validar archivo --- */
+            if (Archivo is null || Archivo.Length == 0)
+            {
+                ModelState.AddModelError("Archivo", "Debes seleccionar un archivo de audio.");
+            }
+            else
+            {
+                var permitidas = new[] { ".mp3", ".wav", ".aac", ".flac", ".ogg" };
+                var ext = Path.GetExtension(Archivo.FileName).ToLowerInvariant();
+                if (!permitidas.Contains(ext))
+                    ModelState.AddModelError("Archivo", "Formato no soportado.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                Errores = ModelState.Values
+                                     .SelectMany(v => v.Errors)
+                                     .Select(e => e.ErrorMessage)
+                                     .ToList();
+                return Page();
+            }
+
+            /* --- Asignar artista automático si rol = Artista --- */
+            var rol = HttpContext.Session.GetString("Rol");
+            var correo = HttpContext.Session.GetString("Correo");
+
+            if (rol == "Artista")
+            {
+                var artista = await _artSvc.ObtenerPorCorreoAsync(correo!);
+                if (artista is null) return Unauthorized();
+                Cancion.ArtistaId = artista.Id;
+            }
+
+            /* --- Guardar archivo físicamente --- */
+            var carpeta = Path.Combine(_env.WebRootPath, "uploads", "canciones");
+            Directory.CreateDirectory(carpeta);
+
+            var nombreNuevo = $"{Guid.NewGuid()}{Path.GetExtension(Archivo!.FileName)}";
+            var rutaFisica = Path.Combine(carpeta, nombreNuevo);
+
+            await using (var stream = System.IO.File.Create(rutaFisica))
+            {
+                await Archivo.CopyToAsync(stream);
+            }
+
+            /* --- Guardar ruta relativa en la entidad --- */
+            Cancion.RutaArchivo = Path.Combine("uploads", "canciones", nombreNuevo)
+                                  .Replace("\\", "/");
+
+            /* --- Persistir canción vía API --- */
+            Cancion.Id = Guid.NewGuid();
+            await _svc.CrearAsync(Cancion);
+
+            return RedirectToPage("Index");
+        }
     }
-}
 }

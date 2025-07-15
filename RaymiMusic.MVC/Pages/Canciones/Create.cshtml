@@ -25,12 +25,14 @@
     </div>
 }
 
-<form method="post">
+<!-- enctype para permitir subida de archivos -->
+<form method="post" enctype="multipart/form-data">
     <div class="mb-3">
         <label asp-for="Cancion.Titulo" class="form-label">
             <i class="bi bi-music-note me-1"></i>Título
         </label>
         <input asp-for="Cancion.Titulo" class="form-control" />
+        <span asp-validation-for="Cancion.Titulo" class="text-danger"></span>
     </div>
 
     @if (rol == "Admin")
@@ -43,6 +45,7 @@
                     asp-items="@(new SelectList(Model.Artistas, "Id", "NombreArtistico"))">
                 <option value="">-- Selecciona un artista --</option>
             </select>
+            <span asp-validation-for="Cancion.ArtistaId" class="text-danger"></span>
         </div>
     }
     else if (rol == "Artista")
@@ -62,18 +65,16 @@
                 asp-items="@(new SelectList(Model.Generos, "Id", "Nombre"))">
             <option value="">-- Selecciona un género --</option>
         </select>
+        <span asp-validation-for="Cancion.GeneroId" class="text-danger"></span>
     </div>
 
-    <!-- Selector de archivo con ícono -->
+    <!-- Selector real de archivo -->
     <div class="mb-3">
-        <label class="form-label">
+        <label asp-for="Archivo" class="form-label">
             <i class="bi bi-upload me-1"></i>Archivo de la canción
         </label>
-        <div class="input-group">
-            <input type="file" id="archivoInput" class="form-control" accept="audio/*">
-        </div>
-        <!-- Campo oculto que contiene solo el nombre o ruta -->
-        <input type="hidden" asp-for="Cancion.RutaArchivo" id="RutaArchivo" />
+        <input asp-for="Archivo" type="file" class="form-control" accept="audio/*" />
+        <span asp-validation-for="Archivo" class="text-danger"></span>
     </div>
 
     <div class="mb-3">
@@ -81,6 +82,7 @@
             <i class="bi bi-clock-fill me-1"></i>Duración
         </label>
         <input asp-for="Cancion.Duracion" type="time" step="1" class="form-control" />
+        <span asp-validation-for="Cancion.Duracion" class="text-danger"></span>
     </div>
 
     <div class="d-flex justify-content-between">
@@ -95,14 +97,4 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script>
-        // Obtener nombre de archivo y asignarlo al input oculto
-        document.getElementById('archivoInput')?.addEventListener('change', function () {
-            const archivo = this.files[0];
-            if (archivo) {
-                // Puedes usar solo el nombre o la ruta simulada:
-                document.getElementById('RutaArchivo').value = archivo.name;
-            }
-        });
-    </script>
 }

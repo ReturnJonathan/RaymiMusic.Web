@@ -16,18 +16,14 @@ namespace RaymiMusic.MVC.Pages.Canciones
             _svc = svc;
         }
 
-        [BindProperty]
-        public Cancion Cancion { get; set; } = null!;
-
-        public string UrlStreaming { get; set; } = string.Empty;
+        public Cancion Cancion { get; private set; } = null!;
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             var c = await _svc.ObtenerPorIdAsync(id);
-            if (c == null) return NotFound();
+            if (c is null) return NotFound();
 
             Cancion = c;
-            UrlStreaming = _svc.ObtenerUrlStreaming(id);
             return Page();
         }
     }

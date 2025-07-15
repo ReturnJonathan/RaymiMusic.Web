@@ -54,15 +54,16 @@ namespace RaymiMusic.MVC.Pages.Canciones
             Generos = await _genSvc.ObtenerTodosAsync();
             Artistas = await _artSvc.ObtenerTodosAsync();
 
-            /* --- Validar archivo --- */
+            /* ⬇️  Evita que la ausencia de RutaArchivo marque el modelo como inválido */
+            ModelState.Remove("Cancion.RutaArchivo");
+
+            /* ---------- Validar archivo ---------- */
             if (Archivo is null || Archivo.Length == 0)
-            {
                 ModelState.AddModelError("Archivo", "Debes seleccionar un archivo de audio.");
-            }
             else
             {
-                var permitidas = new[] { ".mp3", ".wav", ".aac", ".flac", ".ogg" };
                 var ext = Path.GetExtension(Archivo.FileName).ToLowerInvariant();
+                var permitidas = new[] { ".mp3", ".wav", ".aac", ".flac", ".ogg" };
                 if (!permitidas.Contains(ext))
                     ModelState.AddModelError("Archivo", "Formato no soportado.");
             }
@@ -76,10 +77,9 @@ namespace RaymiMusic.MVC.Pages.Canciones
                 return Page();
             }
 
-            /* --- Asignar artista automático si rol = Artista --- */
+            /* ---------- Asignar artista si rol = Artista ---------- */
             var rol = HttpContext.Session.GetString("Rol");
             var correo = HttpContext.Session.GetString("Correo");
-
             if (rol == "Artista")
             {
                 var artista = await _artSvc.ObtenerPorCorreoAsync(correo!);
@@ -87,7 +87,7 @@ namespace RaymiMusic.MVC.Pages.Canciones
                 Cancion.ArtistaId = artista.Id;
             }
 
-            /* --- Guardar archivo físicamente --- */
+            /* ---------- Guardar archivo ---------- */
             var carpeta = Path.Combine(_env.WebRootPath, "uploads", "canciones");
             Directory.CreateDirectory(carpeta);
 
@@ -99,15 +99,15 @@ namespace RaymiMusic.MVC.Pages.Canciones
                 await Archivo.CopyToAsync(stream);
             }
 
-            /* --- Guardar ruta relativa en la entidad --- */
             Cancion.RutaArchivo = Path.Combine("uploads", "canciones", nombreNuevo)
                                   .Replace("\\", "/");
 
-            /* --- Persistir canción vía API --- */
+            /* ---------- Persistir canción ---------- */
             Cancion.Id = Guid.NewGuid();
             await _svc.CrearAsync(Cancion);
 
             return RedirectToPage("Index");
         }
+
     }
 }

@@ -1,0 +1,64 @@
+﻿@model RaymiMusic.AppWeb.Models.Auth.RegisterArtistVM
+@{
+    ViewData["Title"] = "Registro de artista";
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+<form asp-action="RegisterArtist" method="post" class="w-75">
+    @Html.AntiForgeryToken()
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <!-- Credenciales -->
+    <fieldset class="border p-3 mb-3">
+        <legend>Cuenta</legend>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label"></label>
+            <input asp-for="Password" type="password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ConfirmPassword" class="form-label"></label>
+            <input asp-for="ConfirmPassword" type="password" class="form-control" />
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </fieldset>
+
+    <!-- Datos del artista -->
+    <fieldset class="border p-3 mb-3">
+        <legend>Perfil artístico</legend>
+
+        <div class="mb-3">
+            <label asp-for="NombreArtistico" class="form-label"></label>
+            <input asp-for="NombreArtistico" class="form-control" />
+            <span asp-validation-for="NombreArtistico" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Biografia" class="form-label"></label>
+            <textarea asp-for="Biografia" class="form-control" rows="4"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UrlFotoPerfil" class="form-label"></label>
+            <input asp-for="UrlFotoPerfil" class="form-control" placeholder="https://..." />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="UrlFotoPortada" class="form-label"></label>
+            <input asp-for="UrlFotoPortada" class="form-control" placeholder="https://..." />
+        </div>
+    </fieldset>
+
+    <button class="btn btn-success">Crear cuenta de artista</button>
+    <a asp-controller="Account" asp-action="Login" class="btn btn-secondary ms-2">Cancelar</a>
+</form>

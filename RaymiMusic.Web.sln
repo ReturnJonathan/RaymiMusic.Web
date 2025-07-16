@@ -7,7 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.Api", "RaymiMusi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.Modelos", "RaymiMusic.Modelos\RaymiMusic.Modelos.csproj", "{A41E1E8F-4F2A-4D2D-9207-A6FFFF900E86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.MVC", "RaymiMusic.MVC\RaymiMusic.MVC.csproj", "{CCCB2751-3536-432F-A754-C443748A511E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.App", "RaymiMusic.App\RaymiMusic.App.csproj", "{085E7634-0431-4BC0-B3FC-0B2C253054A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.Api.Consumer", "RaymiMusic.Api.Consumer\RaymiMusic.Api.Consumer.csproj", "{5320CA0F-2559-4C6F-94B8-EBA7B214D776}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RaymiMusic.AppWeb", "RaymiMusic.AppWeb\RaymiMusic.AppWeb.csproj", "{DF1092B2-32B0-4B4E-8E33-111A977864F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +27,18 @@ Global
 		{A41E1E8F-4F2A-4D2D-9207-A6FFFF900E86}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A41E1E8F-4F2A-4D2D-9207-A6FFFF900E86}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A41E1E8F-4F2A-4D2D-9207-A6FFFF900E86}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CCCB2751-3536-432F-A754-C443748A511E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CCCB2751-3536-432F-A754-C443748A511E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CCCB2751-3536-432F-A754-C443748A511E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CCCB2751-3536-432F-A754-C443748A511E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{085E7634-0431-4BC0-B3FC-0B2C253054A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{085E7634-0431-4BC0-B3FC-0B2C253054A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{085E7634-0431-4BC0-B3FC-0B2C253054A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{085E7634-0431-4BC0-B3FC-0B2C253054A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5320CA0F-2559-4C6F-94B8-EBA7B214D776}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5320CA0F-2559-4C6F-94B8-EBA7B214D776}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5320CA0F-2559-4C6F-94B8-EBA7B214D776}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5320CA0F-2559-4C6F-94B8-EBA7B214D776}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF1092B2-32B0-4B4E-8E33-111A977864F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1092B2-32B0-4B4E-8E33-111A977864F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1092B2-32B0-4B4E-8E33-111A977864F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1092B2-32B0-4B4E-8E33-111A977864F8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

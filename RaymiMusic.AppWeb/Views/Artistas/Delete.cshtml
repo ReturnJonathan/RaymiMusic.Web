@@ -1,0 +1,11 @@
+﻿@model Artista
+@{
+    ViewData["Title"] = "Eliminar artista";
+}
+<h2>¿Seguro que quieres eliminar a @Model.NombreArtistico?</h2>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <button class="btn btn-danger">Sí, eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

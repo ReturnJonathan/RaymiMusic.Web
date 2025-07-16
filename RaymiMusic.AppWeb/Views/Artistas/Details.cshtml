@@ -1,0 +1,22 @@
+﻿@model Artista
+@{
+    ViewData["Title"] = "Detalle artista";
+}
+<h2>@Model.NombreArtistico</h2>
+
+@if (!string.IsNullOrWhiteSpace(Model.UrlFotoPortada))
+{
+    <img src="@Model.UrlFotoPortada" style="max-width:600px;" class="mb-3" />
+}
+
+@if (!string.IsNullOrWhiteSpace(Model.UrlFotoPerfil))
+{
+    <img src="@Model.UrlFotoPerfil" style="max-width:200px;" class="rounded-circle mb-3" />
+}
+
+<p><strong>Biografía:</strong> @Model.Biografia</p>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+</p>

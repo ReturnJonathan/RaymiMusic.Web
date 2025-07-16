@@ -1,0 +1,39 @@
+﻿@model Artista
+@{
+    var action = (string)ViewContext.RouteData.Values["action"]!;
+    var isEdit = action.Equals("Edit", StringComparison.OrdinalIgnoreCase);
+    ViewData["Title"] = isEdit ? "Editar artista" : "Nuevo artista";
+}
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="@action" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    @if (isEdit)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+
+    <div class="mb-2">
+        <label asp-for="NombreArtistico" class="form-label"></label>
+        <input asp-for="NombreArtistico" class="form-control" />
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="Biografia" class="form-label"></label>
+        <textarea asp-for="Biografia" class="form-control" rows="4"></textarea>
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="UrlFotoPerfil" class="form-label"></label>
+        <input asp-for="UrlFotoPerfil" class="form-control" placeholder="https://..." />
+    </div>
+
+    <div class="mb-2">
+        <label asp-for="UrlFotoPortada" class="form-label"></label>
+        <input asp-for="UrlFotoPortada" class="form-control" placeholder="https://..." />
+    </div>
+
+    <button class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

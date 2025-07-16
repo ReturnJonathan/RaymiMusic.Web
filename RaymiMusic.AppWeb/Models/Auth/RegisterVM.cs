@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RaymiMusic.Web.Models.Auth;
+namespace RaymiMusic.AppWeb.Models.Auth;
 
 public class RegisterVM
 {

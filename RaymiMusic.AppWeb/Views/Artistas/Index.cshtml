@@ -1,0 +1,29 @@
+﻿@model IEnumerable<Artista>
+@{
+    ViewData["Title"] = "Artistas";
+}
+<h2>Artistas</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-success">+ Nuevo artista</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr><th>Nombre artístico</th><th>Bio</th><th></th></tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.NombreArtistico</td>
+                <td>@a.Biografia?.Substring(0, Math.Min(60, a.Biografia.Length)) …</td>
+                <td class="text-end">
+                    <a asp-action="Details" asp-route-id="@a.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@a.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@a.Id">Borrar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\RaymiMusic.Api.Consumer\RaymiMusic.Api.Consumer.csproj" />
+    <ProjectReference Include="..\RaymiMusic.Modelos\RaymiMusic.Modelos.csproj" />
+    <ProjectReference Include="..\RaymiMusic.Web\RaymiMusic.Api.csproj" />
+  </ItemGroup>
+
 </Project>

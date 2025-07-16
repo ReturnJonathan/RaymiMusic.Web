@@ -27,6 +27,23 @@ namespace RaymiMusic.Api.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "EmailConfirmations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UsuarioId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expiration = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    Purpose = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmailConfirmations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Generos",
                 columns: table => new
                 {
@@ -262,6 +279,9 @@ namespace RaymiMusic.Api.Migrations
         {
             migrationBuilder.DropTable(
                 name: "CancionesEnListas");
+
+            migrationBuilder.DropTable(
+                name: "EmailConfirmations");
 
             migrationBuilder.DropTable(
                 name: "Perfiles");

@@ -1,28 +1,39 @@
-﻿using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using RaymiMusic.Modelos;
-using RaymiMusic.AppWeb.Models.Auth;
+﻿using System;
+using System.Linq;
 using System.Security.Claims;
-using System.Text;
-using RaymiMusic.Api.Data;
 using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RaymiMusic.Api.Data;
+using RaymiMusic.AppWeb.Models.Auth;
+using RaymiMusic.AppWeb.Services;
+using RaymiMusic.Modelos;
 
 namespace RaymiMusic.AppWeb.Controllers
 {
     public class AccountController : Controller
     {
         private readonly AppDbContext _ctx;
+        private readonly IEmailSender _emailSender;
 
-        public AccountController(AppDbContext ctx) => _ctx = ctx;
+        public AccountController(AppDbContext ctx, IEmailSender emailSender)
+        {
+            _ctx = ctx;
+            _emailSender = emailSender;
+        }
 
-        /* ---------- REGISTRO ---------- */
-
+        // GET /Account/Register
         [HttpGet]
         public IActionResult Register() => View();
 
+        // POST /Account/Register
         [HttpPost]
-        public IActionResult Register(RegisterVM vm)
+        public async Task<IActionResult> Register(RegisterVM vm)
         {
             if (!ModelState.IsValid) return View(vm);
 
@@ -32,12 +43,8 @@ namespace RaymiMusic.AppWeb.Controllers
                 return View(vm);
             }
 
-            // Recuperar el GUID del plan Free
-            var planFreeId = _ctx.Planes
-                                 .Where(p => p.Nombre == "Free")
-                                 .Select(p => p.Id)
-                                 .First();          // existe gracias a la semilla o a tus datos
-
+            // 1) Crear usuario Free
+            var planFreeId = _ctx.Planes.First(p => p.Nombre == "Free").Id;
             var usuario = new Usuario
             {
                 Id = Guid.NewGuid(),
@@ -46,57 +53,108 @@ namespace RaymiMusic.AppWeb.Controllers
                 Rol = Roles.Free,
                 PlanSuscripcionId = planFreeId
             };
-
             _ctx.Usuarios.Add(usuario);
-            _ctx.SaveChanges();
+            await _ctx.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Login));
+            // 2) Generar token de verificación
+            var confirm = new EmailConfirmation
+            {
+                UsuarioId = usuario.Id,
+                Token = Guid.NewGuid().ToString("N"),
+                Expiration = DateTime.UtcNow.AddHours(24),
+                IsConfirmed = false,
+                Purpose = ConfirmationPurpose.EmailVerification
+            };
+            _ctx.EmailConfirmations.Add(confirm);
+            await _ctx.SaveChangesAsync();
+
+            // 3) Enviar correo de verificación
+            var linkHtml = Url.Action(
+                nameof(ConfirmEmail),
+                "Account",
+                new { token = confirm.Token },
+                Request.Scheme);
+            var html = $"Para activar tu cuenta haz clic <a href=\"{linkHtml}\">aquí</a>.";
+            await _emailSender.SendEmailAsync(vm.Email, "Confirma tu cuenta", html);
+
+            return RedirectToAction(nameof(RegisterConfirmation));
         }
 
+        [HttpGet]
+        public IActionResult RegisterConfirmation() => View();
 
+        // GET /Account/ConfirmEmail
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return View("ConfirmFailed");
 
-        /* ---------- LOGIN ---------- */
+            var rec = await _ctx.EmailConfirmations
+                .FirstOrDefaultAsync(x =>
+                    x.Token == token &&
+                    x.Purpose == ConfirmationPurpose.EmailVerification &&
+                    x.Expiration > DateTime.UtcNow);
 
+            if (rec == null) return View("ConfirmFailed");
+
+            rec.IsConfirmed = true;
+            await _ctx.SaveChangesAsync();
+            return View("ConfirmSuccess");
+        }
+
+        // GET /Account/Login
         [HttpGet]
         public IActionResult Login() => View();
 
+        // POST /Account/Login
         [HttpPost]
         public async Task<IActionResult> Login(LoginVM vm)
         {
             if (!ModelState.IsValid) return View(vm);
 
-            var usuario = _ctx.Usuarios.FirstOrDefault(u => u.Correo == vm.Email);
+            var user = await _ctx.Usuarios
+                .FirstOrDefaultAsync(u => u.Correo == vm.Email);
 
-            if (usuario == null || !Verify(vm.Password, usuario.HashContrasena))
+            if (user == null || Hash(vm.Password) != user.HashContrasena)
             {
                 ModelState.AddModelError("", "Credenciales inválidas");
                 return View(vm);
             }
 
+            // Verificar que el email está confirmado
+            var ok = await _ctx.EmailConfirmations
+                .AnyAsync(c => c.UsuarioId == user.Id
+                            && c.Purpose == ConfirmationPurpose.EmailVerification
+                            && c.IsConfirmed);
+            if (!ok)
+            {
+                ModelState.AddModelError("",
+                    "Debes confirmar tu correo antes de iniciar sesión.");
+                return View(vm);
+            }
+
+            // Crear claims y firmar
             var claims = new[]
             {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-            new Claim(ClaimTypes.Name,          usuario.Correo),
-            new Claim(ClaimTypes.Role,          usuario.Rol)
-        };
-
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name,           user.Correo),
+                new Claim(ClaimTypes.Role,           user.Rol)
+            };
             var identity = new ClaimsIdentity(
                 claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(identity),
                 new AuthenticationProperties
                 {
-                    IsPersistent = true,           // “Recuérdame”
+                    IsPersistent = true,
                     ExpiresUtc = DateTimeOffset.UtcNow.AddHours(2)
                 });
 
             return RedirectToAction("Index", "Home");
         }
 
-        /* ---------- LOGOUT ---------- */
-
+        // POST /Account/Logout
         [HttpPost, ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
@@ -104,24 +162,95 @@ namespace RaymiMusic.AppWeb.Controllers
             return RedirectToAction(nameof(Login));
         }
 
-        /* ---------- Helpers ---------- */
+        // GET /Account/ForgotPassword
+        [HttpGet]
+        public IActionResult ForgotPassword() => View();
 
+        // POST /Account/ForgotPassword
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email)) return View();
+
+            var user = await _ctx.Usuarios
+                .FirstOrDefaultAsync(u => u.Correo == email);
+            if (user == null)
+                return RedirectToAction(nameof(ForgotPasswordConfirmation));
+
+            var reset = new EmailConfirmation
+            {
+                UsuarioId = user.Id,
+                Token = Guid.NewGuid().ToString("N"),
+                Expiration = DateTime.UtcNow.AddHours(2),
+                IsConfirmed = false,
+                Purpose = ConfirmationPurpose.PasswordReset
+            };
+            _ctx.EmailConfirmations.Add(reset);
+            await _ctx.SaveChangesAsync();
+
+            var link = Url.Action(
+                nameof(ResetPassword),
+                "Account",
+                new { token = reset.Token },
+                Request.Scheme);
+            var body = $"Para restablecer tu contraseña haz clic <a href=\"{link}\">aquí</a>.";
+            await _emailSender.SendEmailAsync(email, "Restablece tu contraseña", body);
+
+            return RedirectToAction(nameof(ForgotPasswordConfirmation));
+        }
+
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation() => View();
+
+        // GET /Account/ResetPassword
+        [HttpGet]
+        public IActionResult ResetPassword(string token)
+        {
+            if (string.IsNullOrEmpty(token)) return BadRequest();
+            return View(new ResetPasswordVM { Token = token });
+        }
+
+        // POST /Account/ResetPassword
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordVM vm)
+        {
+            if (!ModelState.IsValid) return View(vm);
+
+            var rec = await _ctx.EmailConfirmations
+                .FirstOrDefaultAsync(x =>
+                    x.Token == vm.Token &&
+                    x.Purpose == ConfirmationPurpose.PasswordReset &&
+                    x.Expiration > DateTime.UtcNow);
+            if (rec == null) return View("ResetFailed");
+
+            var user = await _ctx.Usuarios.FindAsync(rec.UsuarioId);
+            user.HashContrasena = Hash(vm.NewPassword);
+            rec.IsConfirmed = true;
+            await _ctx.SaveChangesAsync();
+
+            return RedirectToAction(nameof(ResetSuccess));
+        }
+
+        [HttpGet]
+        public IActionResult ResetSuccess() => View();
+
+        // Helpers
         private static string Hash(string plain)
         {
             using var sha = SHA256.Create();
-            var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(plain));
-            return Convert.ToBase64String(bytes);
+            var buf = sha.ComputeHash(Encoding.UTF8.GetBytes(plain));
+            return Convert.ToBase64String(buf);
         }
 
-        /* ---------- REGISTRO ARTISTA (GET) ---------- */
+        // GET /Account/RegisterArtist
         [HttpGet]
         public IActionResult RegisterArtist() => View();
 
-        /* ---------- REGISTRO ARTISTA (POST) ---------- */
         [HttpPost]
-        public IActionResult RegisterArtist(RegisterArtistVM vm)
+        public async Task<IActionResult> RegisterArtist(RegisterArtistVM vm)
         {
-            if (!ModelState.IsValid) return View(vm);
+            if (!ModelState.IsValid)
+                return View(vm);
 
             if (_ctx.Usuarios.Any(u => u.Correo == vm.Email))
             {
@@ -129,25 +258,20 @@ namespace RaymiMusic.AppWeb.Controllers
                 return View(vm);
             }
 
-            /* 1) Id del plan Free */
-            var planFreeId = _ctx.Planes
-                                 .Where(p => p.Nombre == "Free")
-                                 .Select(p => p.Id)
-                                 .First();
-
-            /* 2) Crear usuario con rol ARTISTA */
-            var usuarioId = Guid.NewGuid();
+            // 1) Crear usuario con rol Artista
+            var planFreeId = _ctx.Planes.First(p => p.Nombre == "Free").Id;
             var usuario = new Usuario
             {
-                Id = usuarioId,
+                Id = Guid.NewGuid(),
                 Correo = vm.Email,
                 HashContrasena = Hash(vm.Password),
                 Rol = Roles.Artista,
                 PlanSuscripcionId = planFreeId
             };
             _ctx.Usuarios.Add(usuario);
+            await _ctx.SaveChangesAsync();
 
-            /* 3) Crear registro en Artistas */
+            // 2) Crear registro en Artistas (sin UsuarioId)
             var artista = new Artista
             {
                 Id = Guid.NewGuid(),
@@ -155,16 +279,46 @@ namespace RaymiMusic.AppWeb.Controllers
                 Biografia = vm.Biografia,
                 UrlFotoPerfil = vm.UrlFotoPerfil,
                 UrlFotoPortada = vm.UrlFotoPortada
-                // Si luego quieres relacionar Artista↔Usuario, añade la FK aquí
             };
             _ctx.Artistas.Add(artista);
+            await _ctx.SaveChangesAsync();
 
-            _ctx.SaveChanges();
+            // 3) Generar token de verificación
+            var confirm = new EmailConfirmation
+            {
+                UsuarioId = usuario.Id,
+                Token = Guid.NewGuid().ToString("N"),
+                Expiration = DateTime.UtcNow.AddHours(24),
+                IsConfirmed = false,
+                Purpose = ConfirmationPurpose.EmailVerification
+            };
+            _ctx.EmailConfirmations.Add(confirm);
+            await _ctx.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Login));
+            // 4) Enviar correo de verificación
+            var link = Url.Action(
+                nameof(ConfirmEmail),
+                "Account",
+                new { token = confirm.Token },
+                Request.Scheme);
+            var html = $@"
+        <p>Hola <strong>{vm.NombreArtistico}</strong>,</p>
+        <p>Para activar tu cuenta de artista haz clic <a href=""{link}"">aquí</a>.</p>";
+            await _emailSender.SendEmailAsync(vm.Email, "Confirma tu cuenta de artista", html);
+
+            // 5) Redirigir a confirmación
+            return RedirectToAction(nameof(RegisterArtistConfirmation));
         }
 
 
-        private static bool Verify(string plain, string hashed) => Hash(plain) == hashed;
+        // GET /Account/RegisterArtistConfirmation
+        [HttpGet]
+        public IActionResult RegisterArtistConfirmation(string email)
+        {
+            ViewData["Email"] = email;
+            return View();
+        }
+
+
     }
 }

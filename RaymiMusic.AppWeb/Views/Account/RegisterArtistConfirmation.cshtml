@@ -1,0 +1,11 @@
+﻿@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Registro artista exitoso";
+    var email = (string?)ViewData["Email"] ?? "";
+}
+<h2>@ViewData["Title"]</h2>
+<p>
+    ¡Gracias por registrarte como artista!<br />
+    Hemos enviado un correo a <strong>@email</strong>
+    para que confirmes tu cuenta de artista.
+</p>

@@ -1,0 +1,13 @@
+﻿@*
+  Views/Account/ConfirmSuccess.cshtml
+*@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Correo confirmado";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    Tu correo ha sido confirmado correctamente.
+    <a asp-controller="Account" asp-action="Login">Haz clic aquí para iniciar sesión</a>.
+</p>

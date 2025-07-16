@@ -132,6 +132,35 @@ namespace RaymiMusic.Api.Migrations
                     b.ToTable("CancionesEnListas");
                 });
 
+            modelBuilder.Entity("RaymiMusic.Modelos.EmailConfirmation", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("Expiration")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Purpose")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailConfirmations");
+                });
+
             modelBuilder.Entity("RaymiMusic.Modelos.Genero", b =>
                 {
                     b.Property<Guid>("Id")

@@ -1,27 +1,28 @@
 ﻿@model RaymiMusic.AppWeb.Models.Auth.LoginVM
 @{
-    ViewData["Title"] = "Ingreso";
+    ViewData["Title"] = "Iniciar sesión";
 }
+<h2>@ViewData["Title"]</h2>
 
-<h2 class="mb-3">@ViewData["Title"]</h2>
+<form asp-action="Login" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<form asp-action="Login" method="post" class="w-50">
-    @Html.AntiForgeryToken()
-
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="mb-3">
-        <label asp-for="Email" class="form-label"></label>
+    <div class="form-group">
+        <label asp-for="Email"></label>
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
+    <div class="form-group">
+        <label asp-for="Password"></label>
         <input asp-for="Password" type="password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
-    <button class="btn btn-primary">Entrar</button>
-    <a asp-controller="Account" asp-action="Register" class="btn btn-link">Crear cuenta</a>
+    <button type="submit" class="btn btn-primary">Entrar</button>
 </form>
+
+<p>
+    ¿Olvidaste tu contraseña? <a asp-action="ForgotPassword">Recuperarla</a><br />
+    ¿No tienes cuenta? <a asp-action="Register">Regístrate</a>
+</p>

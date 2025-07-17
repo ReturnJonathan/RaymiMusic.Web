@@ -1,0 +1,35 @@
+﻿@model IEnumerable<RaymiMusic.Modelos.Usuario>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Usuarios";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Usuario</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Correo</th>
+            <th>Rol</th>
+            <th>Plan</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.Correo</td>
+                <td>@u.Rol</td>
+                <td>@u.PlanSuscripcion.Nombre</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@u.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@u.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@u.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

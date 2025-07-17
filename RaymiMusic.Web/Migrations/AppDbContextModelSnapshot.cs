@@ -64,7 +64,12 @@ namespace RaymiMusic.Api.Migrations
                     b.Property<string>("UrlFotoPortada")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Artistas");
                 });
@@ -295,6 +300,17 @@ namespace RaymiMusic.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Artista");
+                });
+
+            modelBuilder.Entity("RaymiMusic.Modelos.Artista", b =>
+                {
+                    b.HasOne("RaymiMusic.Modelos.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("RaymiMusic.Modelos.Cancion", b =>

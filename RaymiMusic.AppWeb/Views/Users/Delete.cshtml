@@ -1,0 +1,28 @@
+﻿@model RaymiMusic.Modelos.Usuario
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Eliminar usuario";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4>¿Seguro que quieres eliminar este usuario?</h4>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Correo</dt>
+        <dd class="col-sm-10">@Model.Correo</dd>
+
+        <dt class="col-sm-2">Rol</dt>
+        <dd class="col-sm-10">@Model.Rol</dd>
+
+        <dt class="col-sm-2">Plan</dt>
+        <dd class="col-sm-10">@Model.PlanSuscripcion.Nombre</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Eliminar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

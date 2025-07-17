@@ -1,0 +1,57 @@
+﻿@model RaymiMusic.Modelos.Cancion
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Editar Canción";
+    bool isAdmin = User.IsInRole(Roles.Admin);
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Titulo" class="form-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RutaArchivo" class="form-label">URL / Ruta</label>
+        <input asp-for="RutaArchivo" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Duracion" class="form-label"></label>
+        <input asp-for="Duracion" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="GeneroId" class="form-label">Género</label>
+        <select asp-for="GeneroId" class="form-select" asp-items="@(ViewData["Generos"] as SelectList)">
+            <option value="">-- seleccionar --</option>
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AlbumId" class="form-label">Álbum (opcional)</label>
+        <select asp-for="AlbumId" class="form-select" asp-items="@(ViewData["Albums"] as SelectList)">
+            <option value="">-- ninguno --</option>
+        </select>
+    </div>
+
+    @if (isAdmin)
+    {
+        <div class="mb-3">
+            <label asp-for="ArtistaId" class="form-label">Artista</label>
+            <select asp-for="ArtistaId" class="form-select" asp-items="@(ViewData["Artistas"] as SelectList)">
+                <option value="">-- seleccionar --</option>
+            </select>
+        </div>
+    }
+
+    <button type="submit" class="btn btn-success">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

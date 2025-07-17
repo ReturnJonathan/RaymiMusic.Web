@@ -1,0 +1,35 @@
+﻿@model IEnumerable<RaymiMusic.Modelos.PlanSuscripcion>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Planes de Suscripción";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Plan</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Descargas Máx.</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Nombre</td>
+                <td>@p.Precio.ToString("C")</td>
+                <td>@p.DescargasMaximas</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@p.Id">Ver</a> |
+                    <a asp-action="Edit"    asp-route-id="@p.Id">Editar</a> |
+                    <a asp-action="Delete"  asp-route-id="@p.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

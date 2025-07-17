@@ -1,0 +1,40 @@
+﻿@model IEnumerable<RaymiMusic.Modelos.Cancion>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Canciones";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nueva Canción</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Artista</th>
+            <th>Género</th>
+            <th>Álbum</th>
+            <th>Duración</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Titulo</td>
+                <td>@c.Artista?.NombreArtistico</td>
+                <td>@c.Genero?.Nombre</td>
+                <td>@c.Album?.Titulo</td>
+                <td>@c.Duracion</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@c.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@c.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@c.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

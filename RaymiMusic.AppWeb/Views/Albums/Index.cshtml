@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Album>
+
+@{
+    ViewData["Title"] = "Álbumes";
+    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+    bool isAdmin = User.IsInRole(Roles.Admin);
+    bool isArtist = User.IsInRole(Roles.Artista);
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (isAdmin || isArtist)
+{
+    <p><a asp-action="Create" class="btn btn-primary">Nuevo álbum</a></p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Fecha lanzamiento</th>
+            <th>Artista</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var alb in Model)
+        {
+            <tr>
+                <td>@alb.Titulo</td>
+                <td>
+                    @(
+                        alb.FechaLanzamiento.HasValue
+                        ? alb.FechaLanzamiento.Value.ToString("yyyy-MM-dd")
+                        : "—"
+                        )
+                </td>
+                <td>@alb.Artista.NombreArtistico</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@alb.Id" class="btn btn-link">Ver</a>
+                    @if (isAdmin
+                   || (isArtist && alb.ArtistaId.ToString() == userId))
+                    {
+                        <a asp-action="Edit" asp-route-id="@alb.Id" class="btn btn-link">Editar</a>
+                        <a asp-action="Delete" asp-route-id="@alb.Id" class="btn btn-link text-danger">Eliminar</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

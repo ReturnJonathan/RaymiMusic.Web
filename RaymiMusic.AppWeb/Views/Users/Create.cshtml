@@ -1,0 +1,38 @@
+﻿@model RaymiMusic.Modelos.Usuario
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Crear usuario";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="HashContrasena" class="form-label">Contraseña (hash)</label>
+        <input asp-for="HashContrasena" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Rol" class="form-label"></label>
+        <input asp-for="Rol" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="PlanSuscripcionId" class="form-label">Plan</label>
+        <select asp-for="PlanSuscripcionId"
+                class="form-select"
+                asp-items="@(ViewData["Planes"] as SelectList)">
+            <option value="">-- seleccionar --</option>
+        </select>
+
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

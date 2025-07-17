@@ -1,0 +1,31 @@
+﻿@model IEnumerable<RaymiMusic.Modelos.Genero>
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Géneros";
+}
+
+<h2>@ViewData["Title"]</h2>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nuevo Género</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var g in Model)
+        {
+            <tr>
+                <td>@g.Nombre</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@g.Id">Ver</a> |
+                    <a asp-action="Edit" asp-route-id="@g.Id">Editar</a> |
+                    <a asp-action="Delete" asp-route-id="@g.Id">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

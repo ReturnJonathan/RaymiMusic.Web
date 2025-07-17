@@ -1,0 +1,27 @@
+﻿@model RaymiMusic.Modelos.PlanSuscripcion
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Crear nuevo Plan";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="Nombre" class="form-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="Precio" class="form-label"></label>
+        <input asp-for="Precio" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label asp-for="DescargasMaximas" class="form-label"></label>
+        <input asp-for="DescargasMaximas" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Crear</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

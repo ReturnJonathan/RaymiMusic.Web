@@ -272,14 +272,16 @@ namespace RaymiMusic.AppWeb.Controllers
             await _ctx.SaveChangesAsync();
 
             // 2) Crear registro en Artistas (sin UsuarioId)
+            // 2) Crear registro en Artistas, usando el mismo Id que el Usuario
             var artista = new Artista
             {
-                Id = Guid.NewGuid(),
+                Id = usuario.Id,                    // ← aquí
                 NombreArtistico = vm.NombreArtistico,
                 Biografia = vm.Biografia,
                 UrlFotoPerfil = vm.UrlFotoPerfil,
                 UrlFotoPortada = vm.UrlFotoPortada
             };
+
             _ctx.Artistas.Add(artista);
             await _ctx.SaveChangesAsync();
 

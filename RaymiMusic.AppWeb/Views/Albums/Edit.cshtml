@@ -1,15 +1,18 @@
-﻿@model RaymiMusic.AppWeb.Models.AlbumCreateVM
+﻿@model RaymiMusic.AppWeb.Models.AlbumEditVM
+@using Microsoft.AspNetCore.Mvc.Rendering
+
 @{
+    Layout = "_Layout";
     ViewData["Title"] = "Editar álbum";
+    bool isAdmin = User.IsInRole("Admin");
 }
 
 <h2>@ViewData["Title"]</h2>
 
-<form asp-action="Edit" asp-route-id="@ViewData["Id"]" method="post">
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
 
-    @* Aquí llevamos el Id oculto para poder recuperarlo en el POST *@
-    <input type="hidden" name="Id" value="@ViewData["Id"]" />
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
 
     <div class="mb-3">
         <label asp-for="Titulo" class="form-label"></label>
@@ -23,7 +26,8 @@
         <span asp-validation-for="FechaLanzamiento" class="text-danger"></span>
     </div>
 
-    @if (Model.Artistas != null)
+    @* sólo muestro el dropdown si el VM trae la lista de Artistas *@
+    @if (isAdmin && Model.Artistas != null)
     {
         <div class="mb-3">
             <label asp-for="ArtistaId" class="form-label">Artista</label>
@@ -32,6 +36,11 @@
             </select>
             <span asp-validation-for="ArtistaId" class="text-danger"></span>
         </div>
+    }
+    else
+    {
+        @* inyectamos oculto para que el binder reciba el Id del artista logueado *@
+        <input type="hidden" asp-for="ArtistaId" />
     }
 
     <button type="submit" class="btn btn-success">Guardar</button>

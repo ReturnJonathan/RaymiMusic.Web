@@ -91,38 +91,38 @@ namespace RaymiMusic.AppWeb.Controllers
 
 
         // GET: /Albums/Edit/{id}
+        // GET: /Albums/Edit/{id}
         public async Task<IActionResult> Edit(Guid id)
         {
             var album = await _ctx.Albumes.FindAsync(id);
             if (album == null) return NotFound();
 
-            var vm = new AlbumCreateVM
+            var vm = new AlbumEditVM
             {
+                Id = album.Id,
                 Titulo = album.Titulo,
                 FechaLanzamiento = album.FechaLanzamiento,
                 ArtistaId = album.ArtistaId,
-                // si no soy artista, dejo que elija
-                Artistas = IsArtist
-                    ? null
-                    : new SelectList(_ctx.Artistas, "Id", "NombreArtistico", album.ArtistaId)
+                Artistas = User.IsInRole("Admin")
+                ? new SelectList(_ctx.Artistas, "Id", "NombreArtistico", album.ArtistaId)
+                : null
             };
-            vm.Artistas = vm.Artistas;
-            ViewData["Id"] = album.Id; // lo usamos en el form
             return View(vm);
         }
 
+
         // POST: /Albums/Edit/{id}
         [HttpPost, ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, AlbumCreateVM vm)
+        public async Task<IActionResult> Edit(Guid id, AlbumEditVM vm)
         {
-            if (IsArtist)
+            // forzar artista logueado si no es admin
+            if (User.IsInRole("Artista"))
                 vm.ArtistaId = CurrentUserId;
 
             if (!ModelState.IsValid)
             {
-                if (!IsArtist)
+                if (User.IsInRole("Admin"))
                     vm.Artistas = new SelectList(_ctx.Artistas, "Id", "NombreArtistico", vm.ArtistaId);
-                ViewData["Id"] = id;
                 return View(vm);
             }
 
@@ -133,10 +133,10 @@ namespace RaymiMusic.AppWeb.Controllers
             album.FechaLanzamiento = vm.FechaLanzamiento;
             album.ArtistaId = vm.ArtistaId;
 
-            _ctx.Update(album);
             await _ctx.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         // GET: /Albums/Delete/{id}
         public async Task<IActionResult> Delete(Guid id)

@@ -1,0 +1,26 @@
+﻿@model IEnumerable<RaymiMusic.AppWeb.Models.PlaylistDTO>
+@{
+    ViewData["Title"] = "Mis Playlists";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">+ Nueva Playlist</a>
+</p>
+
+@if (!Model.Any())
+{
+    <p>No tienes playlists aún.</p>
+}
+else
+{
+    <ul class="list-group">
+        @foreach (var pl in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <a asp-action="Details" asp-route-id="@pl.Id">@pl.Nombre</a>
+                <span class="badge bg-secondary">@pl.CancionesCount</span>
+            </li>
+        }
+    </ul>
+}

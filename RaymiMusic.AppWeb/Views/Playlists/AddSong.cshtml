@@ -1,0 +1,28 @@
+﻿@model RaymiMusic.AppWeb.Models.AddSongVM
+@{
+    ViewData["Title"] = "Agregar canción a Playlist";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form asp-action="AddSong" method="post">
+    <input type="hidden" asp-for="SongId" />
+
+    <div class="mb-3">
+        <label asp-for="PlaylistId" class="form-label"></label>
+        <select asp-for="PlaylistId" class="form-select">
+            <option value="">-- Selecciona una playlist --</option>
+            @foreach (var pl in Model.Playlists)
+            {
+                <option value="@pl.Id">
+                    @pl.Nombre (@pl.CancionesCount)
+                </option>
+            }
+        </select>
+        <span asp-validation-for="PlaylistId" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Agregar</button>
+    <a asp-controller="Player" asp-action="Play" asp-route-id="@Model.SongId"
+       class="btn btn-outline-secondary">Cancelar</a>
+</form>

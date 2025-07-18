@@ -9,10 +9,24 @@ using System.Numerics;
 using RaymiMusic.AppWeb;
 using System.Text;
 using System.Security.Cryptography;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
 /* ---------- Services ---------- */
+builder.Services.AddHttpClient<ISongService, SongService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
+});
+
+builder.Services.AddHttpClient<IPlaylistService, PlaylistService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]);
+});
+
+builder.Services.AddHttpClient<IArtistService, ArtistService>(client =>
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:BaseUrl"]));
+
 
 // MVC
 builder.Services.AddControllersWithViews();
@@ -29,6 +43,7 @@ builder.Services
     {
         opt.LoginPath = "/Account/Login";
         opt.LogoutPath = "/Account/Logout";
+        opt.AccessDeniedPath = "/Account/AccessDenied"; // añade esto
         // opt.ExpireTimeSpan = TimeSpan.FromHours(2); // ← opcional
     });
 

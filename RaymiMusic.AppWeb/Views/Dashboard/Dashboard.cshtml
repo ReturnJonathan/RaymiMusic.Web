@@ -1,0 +1,63 @@
+﻿@model RaymiMusic.AppWeb.Models.ArtistDashboardVM
+@{
+    ViewData["Title"] = "Dashboard de Artista";
+}
+
+<h1>Panel de @Model.NombreArtista</h1>
+
+<div class="row mt-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Canciones</h5>
+                <p class="display-4">@Model.TotalCanciones</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Álbumes</h5>
+                <p class="display-4">@Model.TotalAlbumes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-center">
+            <div class="card-body">
+                <h5 class="card-title">Playlists</h5>
+                <p class="display-4">@Model.TotalPlaylists</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="mt-5">Últimas canciones subidas</h2>
+@if (!Model.UltimasCanciones.Any())
+{
+    <p>No tienes canciones publicadas aún.</p>
+}
+else
+{
+    <div class="list-group">
+        @foreach (var c in Model.UltimasCanciones)
+        {
+            <a asp-controller="Player"
+               asp-action="Play"
+               asp-route-id="@c.Id"
+               class="list-group-item list-group-item-action">
+                @c.Titulo
+                <span class="text-muted">(@c.Duracion.ToString(@"mm\:ss"))</span>
+            </a>
+        }
+    </div>
+}
+
+<p class="mt-4">
+    <a asp-controller="Canciones" asp-action="Create" class="btn btn-primary">
+        + Subir nueva canción
+    </a>
+    <a asp-controller="Albumes" asp-action="Index" class="btn btn-outline-secondary ms-2">
+        Ver mis álbumes
+    </a>
+</p>

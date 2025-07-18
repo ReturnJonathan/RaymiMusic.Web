@@ -1,0 +1,59 @@
+﻿@model RaymiMusic.AppWeb.Models.PlaylistDetailsVM
+
+@{
+    ViewData["Title"] = Model.Nombre;
+}
+
+<h1>@Model.Nombre</h1>
+<p>
+    @if (Model.EsPublica)
+    {
+        <span class="badge bg-info">Pública</span>
+    }
+    else
+    {
+        <span class="badge bg-secondary">Privada</span>
+    }
+</p>
+
+@if (!Model.Canciones.Any())
+{
+    <p>Esta playlist está vacía.</p>
+}
+else
+{
+    <table class="table table-striped mt-4">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Artista</th>
+                <th>Álbum</th>
+                <th>Duración</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Canciones)
+            {
+                <tr>
+                    <td>@s.Titulo</td>
+                    <td>@s.ArtistaNombre</td>
+                    <td>@s.AlbumNombre</td>
+                    <td>@s.Duracion.ToString(@"mm\:ss")</td>
+                    <td>
+                        <a asp-controller="Player"
+                           asp-action="Play"
+                           asp-route-id="@s.Id"
+                           class="btn btn-sm btn-primary">
+                            ▶︎
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<p class="mt-4">
+    <a asp-action="Index" class="btn btn-outline-secondary">← Volver a mis playlists</a>
+</p>

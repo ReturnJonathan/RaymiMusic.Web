@@ -19,10 +19,10 @@ namespace RaymiMusic.Modelos
 
         // Dueño de la lista 1:1 con Usuario
         [Required]
-        public Guid UsuarioId { get; set; }
-        public Usuario Usuario { get; set; } = null!;
+        public Guid? UsuarioId { get; set; }
+        public Usuario? Usuario { get; set; } = null!;
 
-        public ICollection<CancionLista> CancionesEnListas { get; set; }
+        public ICollection<CancionLista>? CancionesEnListas { get; set; }
             = new List<CancionLista>();
     }
 }

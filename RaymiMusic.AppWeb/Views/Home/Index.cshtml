@@ -1,8 +1,60 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model RaymiMusic.AppWeb.Models.HomeIndexVM
+
+@{
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>¡Hola, @User.Identity.Name!</h1>
+
+<form method="get" asp-action="Index" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="q" value="@Model.Query" class="form-control"
+               placeholder="Buscar canción, álbum o artista..." />
+        <button class="btn btn-primary">Buscar</button>
+    </div>
+</form>
+
+@if (!Model.Songs.Any())
+{
+    <p>No se encontraron canciones.</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Álbum</th>
+                <th>Artista</th>
+                <th>Duración</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model.Songs)
+            {
+                <tr>
+                    <td>@s.Titulo</td>
+                    <td>@s.AlbumNombre</td>
+                    <td>@s.ArtistaNombre</td>
+                    <td>@s.Duracion.ToString(@"mm\:ss")</td>
+                    <td>
+          
+                        <a asp-controller="Player" asp-action="Play" asp-route-id="@s.Id"
+                           class="btn btn-sm btn-primary">
+                            ▶︎ Reproducir
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<hr />
+<h2>Mis Playlists</h2>
+<p>
+    <a asp-controller="Playlists" asp-action="Index" class="btn btn-success">Ver mis playlists</a>
+    <a asp-controller="Playlists" asp-action="Create" class="btn btn-outline-success">Crear nueva playlist</a>
+</p>

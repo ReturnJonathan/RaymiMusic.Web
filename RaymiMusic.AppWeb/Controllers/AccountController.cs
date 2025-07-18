@@ -321,6 +321,14 @@ namespace RaymiMusic.AppWeb.Controllers
             return View();
         }
 
+        // GET: /Account/AccessDenied
+        [HttpGet]
+        public IActionResult AccessDenied(string returnUrl = null)
+        {
+            ViewData["ReturnUrl"] = returnUrl;
+            return View();
+        }
+
 
     }
 }
